@@ -14,7 +14,7 @@ public class WinChecker {
         if(tiles.size() < 3 && hasPair) return false;
         Tile t0 = tiles.get(0);
 
-        if (!hasPair && tiles.size() >= 2 && t0.equals(tiles.get(1))) {
+        if (!hasPair && t0.equals(tiles.get(1))) {
             Tile r0 = tiles.remove(0);
             Tile r1 = tiles.remove(0);
             if(canFormComb(tiles, true, setsFound)) return true;
