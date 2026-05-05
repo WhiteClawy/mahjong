@@ -9,8 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>18</maven.compiler.source>
-        <maven.compiler.target>18</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
@@ -33,13 +32,13 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>org.example.MainWindow</mainClass>
+                    <mainClass>MainWindow</mainClass>
                 </configuration>
                 <executions>
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.example.MainWindow</mainClass>
+                            <mainClass>MainWindow</mainClass>
                         </configuration>
                     </execution>
                 </executions>

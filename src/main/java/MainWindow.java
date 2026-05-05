@@ -1,5 +1,3 @@
-package org.example;
-
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
@@ -17,6 +15,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,12 +25,11 @@ public class MainWindow extends Application {
     public static final int JUMP_HEIGHT = -30;
     public static final int JUMP_DURATION = 180;
 
-
     @Override
-    public void start(Stage stage){
+    public void start(Stage stage) {
         stage.setTitle("Mahjong or something");
         stage.setMaximized(true);
-        Image spriteSheet = new Image("C:\\Users\\иван\\IdeaProjects\\Majongg\\src\\main\\java\\org\\example\\MajongSpriteSheet.png");
+        Image spriteSheet = loadSpriteSheet();
         ImageView drawPile = new ImageView(spriteSheet);
         ImageView discardPile = new ImageView(spriteSheet);
 
@@ -41,42 +40,6 @@ public class MainWindow extends Application {
         discardPile.setFitWidth(100);
         discardPile.setFitHeight(133);
 
-
-//        ImageView testTile = new ImageView(spriteSheet);
-//        testTile.setViewport(new Rectangle2D(0, 0, 300, 400));
-
-
-        // 1-1-1, 2-2-2, 3-3-3, 4-4-4, 5-5
-//        Hand test1 = new Hand();
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 1));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 1));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 1));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 2));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 2));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 2));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 3));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 3));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 3));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 4));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 4));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 4));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 5));
-//        test1.addTile(new Tile(Tile.Suit.BAMBOO, 5));
-//        Hand test4 = new Hand();
-//        test4.addTile(new Tile(Tile.Suit.BAMBOO, 1));
-//        test4.addTile(new Tile(Tile.Suit.BAMBOO, 2));
-//        test4.addTile(new Tile(Tile.Suit.BAMBOO, 3));
-//        test4.addTile(new Tile(Tile.Suit.BAMBOO, 4));
-//        test4.addTile(new Tile(Tile.Suit.BAMBOO, 5));
-//        test4.addTile(new Tile(Tile.Suit.BAMBOO, 6));
-//        test4.addTile(new Tile(Tile.Suit.BAMBOO, 7));
-//        test4.addTile(new Tile(Tile.Suit.BAMBOO, 8));
-//        test4.addTile(new Tile(Tile.Suit.BAMBOO, 8));
-//        test4.addTile(new Tile(Tile.Suit.CIRCLES, 1));
-//        test4.addTile(new Tile(Tile.Suit.CIRCLES, 2));
-//        test4.addTile(new Tile(Tile.Suit.CIRCLES, 3));
-//        test4.addTile(new Tile(Tile.Suit.BAMBOO, 5));
-//        test4.addTile(new Tile(Tile.Suit.BAMBOO, 5));
         VBox main = new VBox(50);
         main.setAlignment(Pos.CENTER);
         Label title = new Label("Mahjong or Something");
@@ -84,7 +47,6 @@ public class MainWindow extends Application {
         title.setAlignment(Pos.CENTER);
 
         ArrayList<Tile> selectedTiles = new ArrayList<Tile>();
-        //ArrayList<ImageView> selectedTilesSprites = new ArrayList<>();
         HashMap<Tile, ImageView> tileViews = new HashMap<>();
 
         HBox handSprites = new HBox(10);
@@ -102,10 +64,8 @@ public class MainWindow extends Application {
         buttons.getChildren().add(discardPile);
 
         GameState game[] = {HandGenerator.generate()};
-        //GameState game = new GameState(test4, null);
-        //ArrayList<Tile> hand = game[0].hand.getTiles();
 
-        discardPile.setOnMouseClicked(event ->{
+        discardPile.setOnMouseClicked(event -> {
             ArrayList<Tile> tilesToDiscard = new ArrayList<>(selectedTiles);
             int[] remaining = {tilesToDiscard.size()};
             selectedTiles.clear();
@@ -115,10 +75,9 @@ public class MainWindow extends Application {
                 moveToDiscardAnimation(t, discardPile, () -> {
                     game[0].hand.discardTile(tile);
                     Tile newTile = game[0].deck.remove(0);
-                    //moveToHandAnimation(tile.newTile, copy);
                     game[0].hand.addTile(newTile);
                     remaining[0]--;
-                    if(remaining[0] == 0){  // ✅ only when ALL discards done!
+                    if (remaining[0] == 0) {
                         game[0].hand.sortHand();
                         isWin[0] = WinChecker.isWinningHand(game[0].hand);
                         showHand(handSprites, game[0].hand.getTiles(), spriteSheet, selectedTiles, tileViews);
@@ -128,7 +87,7 @@ public class MainWindow extends Application {
         });
 
         checkBtn.setOnAction(event -> {
-            if(isHandGenerated[0]) winState.setText(isWin[0] ? "Nah, I`d win." : "i`m cooked");
+            if (isHandGenerated[0]) winState.setText(isWin[0] ? "Nah, I`d win." : "i`m cooked");
             else winState.setText("Bro, where is the hand");
         });
 
@@ -139,14 +98,8 @@ public class MainWindow extends Application {
             selectedTiles.clear();
             isHandGenerated[0] = true;
             isWin[0] = WinChecker.isWinningHand(game[0].hand);
-//            if(isHandGenerated[0]) winState.setText(isWin[0] ? "Nah, I`d win." : "i`m cooked");
-//            else winState.setText("Bro, where is the hand");
             showHand(handSprites, game[0].hand.getTiles(), spriteSheet, selectedTiles, tileViews);
         });
-
-
-
-
 
         main.getChildren().add(title);
         main.getChildren().add(buttons);
@@ -154,12 +107,21 @@ public class MainWindow extends Application {
         main.getChildren().add(handSprites);
 
         Scene scene = new Scene(main, 400, 500);
-
-
         stage.setScene(scene);
         stage.show();
     }
-    private static void showHand(HBox hbox, ArrayList<Tile> hand, Image spriteSheet, ArrayList<Tile> selectedTiles, HashMap<Tile, ImageView> tileViews){
+
+    private static Image loadSpriteSheet() {
+        URL root = MainWindow.class.getResource("/MajongSpriteSheet.png");
+        if (root != null) return new Image(root.toExternalForm());
+
+        File local = new File("MajongSpriteSheet.png");
+        if (local.isFile()) return new Image(local.toURI().toString());
+
+        throw new IllegalStateException("MajongSpriteSheet.png not found (resources or working directory).");
+    }
+
+    private static void showHand(HBox hbox, ArrayList<Tile> hand, Image spriteSheet, ArrayList<Tile> selectedTiles, HashMap<Tile, ImageView> tileViews) {
         hbox.getChildren().clear();
         for (int i = 0; i < Hand.MAX_HAND_SIZE; i++) {
             ImageView t = new ImageView(spriteSheet);
@@ -171,14 +133,14 @@ public class MainWindow extends Application {
             t.setFitWidth(100);
             t.setFitHeight(133);
             t.setOnMouseEntered(event -> {
-                if(!isSelected[0]){
+                if (!isSelected[0]) {
                     TranslateTransition anim = new TranslateTransition(Duration.millis(JUMP_DURATION), t);
                     anim.setToY(JUMP_HEIGHT);
                     anim.play();
                 }
             });
             t.setOnMouseExited(event -> {
-                if(!isSelected[0]){
+                if (!isSelected[0]) {
                     TranslateTransition anim = new TranslateTransition(Duration.millis(JUMP_DURATION), t);
                     anim.setToY(0);
                     anim.play();
@@ -186,9 +148,9 @@ public class MainWindow extends Application {
             });
             t.setOnMouseClicked(event -> {
                 isSelected[0] = !isSelected[0];
-                if(isSelected[0]){
+                if (isSelected[0]) {
                     selectedTiles.add(hand.get(index));
-                }else{
+                } else {
                     selectedTiles.remove(hand.get(index));
                 }
                 TranslateTransition anim = new TranslateTransition(Duration.millis(JUMP_DURATION), t);
@@ -198,12 +160,13 @@ public class MainWindow extends Application {
             hbox.getChildren().add(t);
         }
     }
-    private static void moveToDiscardAnimation(ImageView tile, ImageView to, Runnable onFinished){
+
+    private static void moveToDiscardAnimation(ImageView tile, ImageView to, Runnable onFinished) {
         double targetX = to.localToScene(0, 0).getX() - tile.localToScene(0, 0).getX();
         double targetY = to.localToScene(0, 0).getY() - tile.localToScene(0, 0).getY();
 
-        TranslateTransition move = new TranslateTransition(Duration.millis(JUMP_DURATION*2), tile);
-        FadeTransition fade = new FadeTransition(Duration.millis(JUMP_DURATION*2), tile);
+        TranslateTransition move = new TranslateTransition(Duration.millis(JUMP_DURATION * 2), tile);
+        FadeTransition fade = new FadeTransition(Duration.millis(JUMP_DURATION * 2), tile);
         move.setToX(targetX);
         move.setToY(targetY);
         fade.setToValue(0);
@@ -212,14 +175,17 @@ public class MainWindow extends Application {
         anim.setOnFinished(event -> onFinished.run());
         anim.play();
     }
-    private static void moveToHandAnimation(ImageView tile, ImageView to, Runnable onFinished){
+
+    private static void moveToHandAnimation(ImageView tile, ImageView to, Runnable onFinished) {
         TranslateTransition move = new TranslateTransition(Duration.millis(JUMP_DURATION), tile);
         move.setToX(to.getY());
         move.setToY(to.getY());
         move.setOnFinished(event -> onFinished.run());
         move.play();
     }
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
         launch(args);
     }
 }
+
